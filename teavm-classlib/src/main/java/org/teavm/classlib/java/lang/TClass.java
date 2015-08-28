@@ -17,6 +17,7 @@ package org.teavm.classlib.java.lang;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.teavm.classlib.impl.DeclaringClassMetadataGenerator;
 import org.teavm.classlib.java.lang.annotation.TAnnotation;
 import org.teavm.classlib.java.lang.reflect.TAnnotatedElement;
@@ -239,5 +240,38 @@ public class TClass<T> extends TObject implements TAnnotatedElement {
         for (TAnnotation annot : getAnnotations()) {
             annotationsByType.put((TClass<?>)(Object)annot.annotationType(), annot);
         }
+    }
+    
+
+    public TString getSimpleName() {
+        if (isArray()) {
+        	return TString.wrap(getComponentType().getSimpleName() +"[]");
+        }
+
+        final TString name = getName();
+		TString simpleName = name.substring(name.lastIndexOf(TString.wrap("."))+1); // strip the package name
+		
+		final int dollar = simpleName.indexOf('$');
+		if (dollar >= 0) {
+			simpleName = simpleName.substring(dollar);
+			
+			final int length = simpleName.length();
+			if (length < 1) {
+				throw new InternalError("Malformed class name");
+			}
+			
+			int index = 1;
+			while (index < length && isAsciiDigit(simpleName.charAt(index)))
+				index++;
+			
+			simpleName = simpleName.substring(index);
+		}
+		
+		return simpleName;
+		
+    }
+    
+    private static boolean isAsciiDigit(char c) {
+        return '0' <= c && c <= '9';
     }
 }

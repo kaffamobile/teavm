@@ -71,4 +71,9 @@ public class TRuntime {
     public long totalMemory() {
         return Integer.MAX_VALUE;
     }
+    
+    public int availableProcessors() {
+    	return 1;
+    }
+
 }

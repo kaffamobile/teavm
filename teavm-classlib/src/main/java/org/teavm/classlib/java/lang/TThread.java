@@ -232,4 +232,20 @@ public class TThread extends TObject implements TRunnable {
     public TStackTraceElement[] getStackTrace() {
         return new TStackTraceElement[0];
     }
+    
+    public final void setDaemon(boolean b) {
+    	
+    }
+    
+    public final boolean isDaemon() {
+    	return false;
+    }
+    
+    public interface UncaughtExceptionHandler {
+        void uncaughtException(Thread t, Throwable e);
+    }
+    
+    public final UncaughtExceptionHandler getUncaughtExceptionHandler() {
+    	return null;
+    }
 }

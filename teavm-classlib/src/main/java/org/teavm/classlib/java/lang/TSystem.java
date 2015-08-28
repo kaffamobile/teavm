@@ -109,4 +109,9 @@ public final class TSystem extends TObject {
     public static TString lineSeparator() {
         return TString.wrap("\n");
     }
+    
+    private static final TSecurityManager securityManager = new TSecurityManager();
+    public static TSecurityManager getSecurityManager() {
+		return securityManager;
+    }
 }
