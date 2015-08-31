@@ -1,28 +1,38 @@
 /*
- *  Copyright 2014 Alexey Andreev.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Written by Doug Lea with assistance from members of JCP JSR-166
+ * Expert Group and released to the public domain, as explained at
+ * http://creativecommons.org/licenses/publicdomain
  */
+
 package org.teavm.classlib.java.util.concurrent;
 
-import org.teavm.classlib.java.lang.TException;
-import org.teavm.classlib.java.lang.TObject;
+import org.teamvm.classlib.java.util.concurrent.TExecutor;
 
 /**
+ * A task that returns a result and may throw an exception.
+ * Implementors define a single method with no arguments called
+ * <tt>call</tt>.
  *
- * @author Alexey Andreev
- * @param <V>
+ * <p>The <tt>Callable</tt> interface is similar to {@link
+ * java.lang.Runnable}, in that both are designed for classes whose
+ * instances are potentially executed by another thread.  A
+ * <tt>Runnable</tt>, however, does not return a result and cannot
+ * throw a checked exception.
+ *
+ * <p> The {@link TExecutors} class contains utility methods to
+ * convert from other common forms to <tt>Callable</tt> classes.
+ *
+ * @see TExecutor
+ * @since 1.5
+ * @author Doug Lea
+ * @param <V> the result type of method <tt>call</tt>
  */
-public interface TCallable<V extends TObject> {
-    V call() throws TException;
+public interface TCallable<V> {
+    /**
+     * Computes a result, or throws an exception if unable to do so.
+     *
+     * @return computed result
+     * @throws Exception if unable to compute a result
+     */
+    V call() throws Exception;
 }
