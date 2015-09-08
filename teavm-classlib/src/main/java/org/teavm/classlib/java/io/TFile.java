@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.apache.harmony.luni.internal.io.FileCanonPathCache;
 import org.apache.harmony.luni.internal.nls.Messages;
+import org.apache.harmony.luni.platform.JSFileStat;
 import org.apache.harmony.luni.platform.JSFileStream;
 import org.apache.harmony.luni.util.PriviAction;
 import org.teavm.classlib.java.net.TURL;
@@ -1410,7 +1411,11 @@ public class TFile implements Serializable, Comparable<TFile> {
     }
     
     private boolean isDirectoryImpl(String filePath) {
-    	return TEmscriptenFileSystem.FS_isDir(TEmscriptenFileSystem.FS_stat(filePath).getMode());
+    	final JSFileStat stat = TEmscriptenFileSystem.FS_stat(filePath);
+    	if (stat == null) {
+    		return false;
+    	}
+		return TEmscriptenFileSystem.FS_isDir(stat.getMode());
     }
     
     private String getCanonImpl(String filePath) {
@@ -1491,7 +1496,11 @@ public class TFile implements Serializable, Comparable<TFile> {
     }
     
     private boolean isFileImpl(String filePath) {
-    	return TEmscriptenFileSystem.FS_isFile(TEmscriptenFileSystem.FS_stat(filePath).getMode());
+    	final JSFileStat stat = TEmscriptenFileSystem.FS_stat(filePath);
+    	if (stat == null) {
+    		return false;
+    	}
+		return TEmscriptenFileSystem.FS_isFile(stat.getMode());
     }
 
     private boolean existsImpl(String filePath) {
@@ -1500,7 +1509,8 @@ public class TFile implements Serializable, Comparable<TFile> {
     
     private boolean mkdirImpl(String filePath) {
     	TEmscriptenFileSystem.FS_mkdir(filePath);
-    	return TEmscriptenFileSystem._FS_exists(filePath);
+    	final boolean exists = TEmscriptenFileSystem._FS_exists(filePath);
+		return exists;
     }
 
     private boolean renameToImpl(String pathExist, String pathNew) {
@@ -1508,11 +1518,5 @@ public class TFile implements Serializable, Comparable<TFile> {
     	return TEmscriptenFileSystem._FS_exists(pathNew);
     }
 
-    public static void autoTest() {
-    	
-    }
-    
-    static {
-    	autoTest();
-    }
+
 }

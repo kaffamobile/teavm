@@ -20,28 +20,28 @@ public class TEmscriptenFileSystem implements TIFileSystem {
 	
 	static final TypedArrayFactory arrayFactory = (TypedArrayFactory) JS.getGlobal();
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path"}, script="FS.mkdir(path);")
 	public static native void FS_mkdir(String path);
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"oldPath", "newPath"}, script="FS.rename(oldPath, newPath);")
 	public static native void FS_rename(String oldPath, String newPath);
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path"}, script="FS.rmdir(path);")
 	public static native void FS_rmdir(String path);
 	
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path"}, script="FS.unlink(path);")
 	public static native void FS_unlink(String path);
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path", "len"}, script="FS.truncate(path, len);")
 	public static native void FS_truncate(String path, int len);
 	
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path", "atime", "mtime"}, script="FS.utime(path, atime, mtime);")
 	public static native void FS_utime(String path, int atime, int mtime);
 	
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path", "flags", "mode"}, script="FS.open(path, flags, mode);")
 	public static native void FS_open(String path, String flags, int mode);
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path", "flags"}, script="try { return FS.open(path, flags); } catch (e) {} return null; ")
 	public static native JSFileStream FS_open(String path, String flags);
 
 	@GeneratedBy(FSNativeGenerator.class)
@@ -62,7 +62,7 @@ public class TEmscriptenFileSystem implements TIFileSystem {
 	@GeneratedBy(FSNativeGenerator.class)
 	public static native int FS_write(JSFileStream stream, ArrayBufferView buffer, int offset, int length);
 	
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path"}, script="try { return FS.stat(path); } catch (e) {} return null; ")
 	public static native JSFileStat FS_stat(String path);
 	
 	@GeneratedBy(FSNativeGenerator.class)
@@ -71,13 +71,13 @@ public class TEmscriptenFileSystem implements TIFileSystem {
 	@GeneratedBy(FSNativeGenerator.class)
 	public static native boolean FS_isDir(int mode);
 	
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={}, script="return FS.cwd();")
 	public static native String FS_cwd();
 
-	@GeneratedBy(FSNativeGenerator.class)
+	@JSBody(params={"path"}, script="try { return FS.readdir(path); } catch (e) {} return null; ")
 	public static native String[] FS_readdir(String path);
 	
-	@JSBody(params={"path"}, script="try { return FS.lookupPath(path).node; } catch (e) {} return false; ")
+	@JSBody(params={"path"}, script="try { return FS.lookupPath(path).node != null; } catch (e) {} return false; ")
 	public static native boolean _FS_exists(String path);
 	
 
