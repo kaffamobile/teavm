@@ -17,6 +17,7 @@ package org.teavm.classlib.java.lang;
 
 import org.teavm.classlib.java.io.TPrintStream;
 import org.teavm.classlib.java.lang.reflect.TArray;
+import org.teavm.classlib.java.util.TProperties;
 import org.teavm.dependency.PluggableDependency;
 import org.teavm.javascript.spi.GeneratedBy;
 
@@ -28,7 +29,15 @@ public final class TSystem extends TObject {
     public static final TPrintStream out = new TPrintStream(new TConsoleOutputStream_stdout(), false);
     public static final TPrintStream err = new TPrintStream(new TConsoleOutputStream_stderr(), false);
 
+    final static TProperties systemProperties = new TProperties();
+    
+    static {
+    	systemProperties.setProperty("user.dir", "/home/web_user");
+    	systemProperties.setProperty("user.home", "/home/web_user");
+    }
+
     private TSystem() {
+    	
     }
 
     public static void arraycopy(TObject src, int srcPos, TObject dest, int destPos, int length) {
@@ -72,9 +81,8 @@ public final class TSystem extends TObject {
     @GeneratedBy(SystemNativeGenerator.class)
     public static native long currentTimeMillis();
 
-    public static TString getProperty(@SuppressWarnings("unused") TString key) {
-        // TODO: make implementation
-        return null;
+    public static TString getProperty(TString key) {
+		return TString.wrap(systemProperties.getProperty(key.toString()));
     }
 
     public static TString getProperty(TString key, TString def) {

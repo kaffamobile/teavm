@@ -37,4 +37,5 @@ public class TSecurityException extends TRuntimeException {
     public TSecurityException(TThrowable cause) {
         super(cause);
     }
+
 }

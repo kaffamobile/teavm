@@ -3,7 +3,8 @@ package org.teavm.classlib.java.lang;
 import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.AccessController;
-import java.security.Permission;
+
+import org.teavm.classlib.java.security.TPermission;
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -480,7 +481,7 @@ public class TSecurityManager {
      *             if the requested {@code permission} is denied according to
      *             the current security policy.
      */
-    public void checkPermission(Permission permission) {
+    public void checkPermission(org.teavm.classlib.java.security.TPermission permission) {
     }
 
     /**
@@ -497,6 +498,6 @@ public class TSecurityManager {
      *             is denied for {@code context} according to the current
      *             security policy.
      */
-    public void checkPermission(Permission permission, Object context) {
+    public void checkPermission(TPermission permission, Object context) {
     }
 }

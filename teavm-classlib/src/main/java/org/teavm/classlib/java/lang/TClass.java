@@ -21,6 +21,7 @@ import java.util.Map;
 import org.teavm.classlib.impl.DeclaringClassMetadataGenerator;
 import org.teavm.classlib.java.lang.annotation.TAnnotation;
 import org.teavm.classlib.java.lang.reflect.TAnnotatedElement;
+import org.teavm.classlib.java.lang.reflect.TMethod;
 import org.teavm.platform.Platform;
 import org.teavm.platform.PlatformClass;
 import org.teavm.platform.metadata.ClassResource;
@@ -273,5 +274,9 @@ public class TClass<T> extends TObject implements TAnnotatedElement {
     
     private static boolean isAsciiDigit(char c) {
         return '0' <= c && c <= '9';
+    }
+    
+    public TMethod getDeclaredMethod(String name, Class<?>... parameterTypes) {
+    	return null;
     }
 }

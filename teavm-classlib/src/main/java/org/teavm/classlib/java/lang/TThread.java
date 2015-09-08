@@ -248,4 +248,8 @@ public class TThread extends TObject implements TRunnable {
     public final UncaughtExceptionHandler getUncaughtExceptionHandler() {
     	return null;
     }
+    
+    public ClassLoader getContextClassLoader() {
+    	return null;
+    }
 }

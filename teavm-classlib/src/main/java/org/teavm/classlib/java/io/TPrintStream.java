@@ -21,7 +21,11 @@ import org.teavm.classlib.java.lang.TString;
 import org.teavm.classlib.java.lang.TStringBuilder;
 import org.teavm.classlib.java.nio.TByteBuffer;
 import org.teavm.classlib.java.nio.TCharBuffer;
-import org.teavm.classlib.java.nio.charset.*;
+import org.teavm.classlib.java.nio.charset.TCharset;
+import org.teavm.classlib.java.nio.charset.TCharsetEncoder;
+import org.teavm.classlib.java.nio.charset.TCodingErrorAction;
+import org.teavm.classlib.java.nio.charset.TIllegalCharsetNameException;
+import org.teavm.classlib.java.nio.charset.TUnsupportedCharsetException;
 import org.teavm.classlib.java.nio.charset.impl.TUTF8Charset;
 
 /**
@@ -178,6 +182,11 @@ public class TPrintStream extends TFilterOutputStream {
     }
 
     public void println(long l) {
+        sb.append(l).append('\n');
+        printSB();
+    }
+
+    public void println(boolean l) {
         sb.append(l).append('\n');
         printSB();
     }

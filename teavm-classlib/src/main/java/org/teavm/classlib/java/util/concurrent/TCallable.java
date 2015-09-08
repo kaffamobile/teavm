@@ -6,7 +6,6 @@
 
 package org.teavm.classlib.java.util.concurrent;
 
-import org.teamvm.classlib.java.util.concurrent.TExecutor;
 
 /**
  * A task that returns a result and may throw an exception.

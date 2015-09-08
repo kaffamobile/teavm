@@ -15,6 +15,10 @@
  */
 package org.teavm.classlib.java.lang;
 
+import java.io.InputStream;
+
+import org.teavm.classlib.java.io.TInputStream;
+
 /**
  *
  * @author Alexey Andreev
@@ -38,4 +42,13 @@ public abstract class TClassLoader extends TObject {
     public static TClassLoader getSystemClassLoader() {
         return systemClassLoader;
     }
+    
+    public TInputStream getResourceAsStream(String resName) {
+        return null;
+    }
+    
+    public static InputStream getSystemResourceAsStream(String name) {
+    	return null;
+    }
+
 }
