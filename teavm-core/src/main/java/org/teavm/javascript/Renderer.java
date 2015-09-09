@@ -2026,6 +2026,10 @@ public class Renderer implements ExprVisitor, StatementVisitor, RenderingContext
     }
 
     private void visitStatements(List<Statement> statements) {
+    	if (statements.isEmpty()) {
+    		return;
+    	}
+    	
         boolean oldEnd = end;
         for (int i = 0; i < statements.size() - 1; ++i) {
             end = false;
