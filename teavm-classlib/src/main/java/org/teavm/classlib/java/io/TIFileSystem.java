@@ -109,5 +109,5 @@ public interface TIFileSystem {
     
     public int ttyRead(byte[] bytes, int offset, int length) throws TIOException;
     
-    static final TIFileSystem FILE_SYSTEM = null;
+    static final TIFileSystem FILE_SYSTEM = new TEmscriptenFileSystem();
 }

@@ -193,7 +193,7 @@ public class TEmscriptenFileSystem implements TIFileSystem {
 	public void open(TFileDescriptor fileDescriptor, int mode) throws TFileNotFoundException {
 		
 		final String flags;
-		if (isFlagSet(mode, O_RDONLY)) {
+		if (mode == O_RDONLY) {
 			flags = "r";
 		} else if (isFlagSet(mode, O_APPEND)) {
 			flags = "w+";

@@ -1483,7 +1483,22 @@ public class TFile implements Serializable, Comparable<TFile> {
 	}
 
     private synchronized static String[] listImpl(String path) {
-    	return TEmscriptenFileSystem.FS_readdir(path);
+    	final String[] list = TEmscriptenFileSystem.FS_readdir(path);
+    	if (list != null && list.length >= 2) {
+    		final String[] l2 = new String[list.length - 2];
+    		
+    		int j = 0;
+    		for (int i = 0; i < list.length; i++) {
+    			final String s = list[i];
+    			if (!(".".equals(s) || "..".equals(s))) {
+    				l2[j] = s;
+    				j++;
+    			}
+    		}
+    		
+    		return l2;
+    	}
+		return list;
     }
     
     private long lengthImpl(String filePath) {
