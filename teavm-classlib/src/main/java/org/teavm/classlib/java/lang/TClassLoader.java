@@ -15,16 +15,31 @@
  */
 package org.teavm.classlib.java.lang;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.teavm.classlib.java.io.TInputStream;
+import org.teavm.classlib.java.util.TEnumeration;
 
 /**
  *
  * @author Alexey Andreev
  */
 public abstract class TClassLoader extends TObject {
-    private TClassLoader parent;
+    public static final class EmptyEnumeration implements TEnumeration<URL> {
+		@Override
+		public boolean hasMoreElements() {
+			return false;
+		}
+
+		@Override
+		public URL nextElement() {
+			return null;
+		}
+	}
+
+	private TClassLoader parent;
     private static TSystemClassLoader systemClassLoader = new TSystemClassLoader();
 
     protected TClassLoader() {
@@ -50,5 +65,14 @@ public abstract class TClassLoader extends TObject {
     public static InputStream getSystemResourceAsStream(String name) {
     	return null;
     }
+    
+    public TEnumeration<URL> getResources(String resName) throws IOException {
+    	return new EmptyEnumeration();
+    }
+
+    public TEnumeration<URL> getSystemResources(String resName) throws IOException {
+    	return new EmptyEnumeration();
+    }
+
 
 }
