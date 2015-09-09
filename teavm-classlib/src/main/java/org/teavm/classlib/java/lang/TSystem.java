@@ -84,6 +84,10 @@ public final class TSystem extends TObject {
     public static TString getProperty(TString key) {
 		return TString.wrap(systemProperties.getProperty(key.toString()));
     }
+    
+    public static TString setProperty(TString key, TString value) {
+		return TString.wrap((String) systemProperties.setProperty(key.toString(), String.valueOf(value)));
+    }
 
     public static TString getProperty(TString key, TString def) {
         TString value = getProperty(key);

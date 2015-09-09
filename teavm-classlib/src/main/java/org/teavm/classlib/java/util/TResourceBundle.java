@@ -75,7 +75,7 @@ import org.apache.harmony.luni.internal.nls.Messages;
  * circumvent both language and country: BaseName___VARIANT is illegal.
  *
  * @see Properties
- * @see PropertyResourceBundle
+ * @see TPropertyResourceBundle
  * @see ListResourceBundle
  * @since 1.1
  */
@@ -178,7 +178,7 @@ public abstract class TResourceBundle {
      * replacing dots in the base name with a slash and by appending
      * "{@code .properties}" at the end of the string. If such a resource can be found
      * by calling {@link ClassLoader#getResource(String)} it is used to
-     * initialize a {@link PropertyResourceBundle}. If this succeeds, it will
+     * initialize a {@link TPropertyResourceBundle}. If this succeeds, it will
      * also load the parents of this {@code ResourceBundle}.
      *
      * For compatibility with older code, the bundle name isn't required to be
@@ -377,7 +377,7 @@ public abstract class TResourceBundle {
             if (stream != null) {
                 try {
                     try {
-                        bundle = new PropertyResourceBundle(stream);
+                        bundle = new TPropertyResourceBundle(stream);
                     } finally {
                         stream.close();
                     }

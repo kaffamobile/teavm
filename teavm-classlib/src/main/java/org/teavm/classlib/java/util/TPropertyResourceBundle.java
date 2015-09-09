@@ -31,7 +31,7 @@ import java.util.Properties;
  * @see Properties
  * @since 1.1
  */
-public class PropertyResourceBundle extends TResourceBundle {
+public class TPropertyResourceBundle extends TResourceBundle {
 
     TProperties resources;
 
@@ -45,7 +45,7 @@ public class PropertyResourceBundle extends TResourceBundle {
      *             if an error occurs during a read operation on the
      *             {@code InputStream}.
      */
-    public PropertyResourceBundle(InputStream stream) throws IOException {
+    public TPropertyResourceBundle(InputStream stream) throws IOException {
         resources = new TProperties();
         resources.load(stream);
     }

@@ -8,8 +8,10 @@ package org.teavm.classlib.java.util.concurrent.locks;
 
 import java.util.Collection;
 
-import org.teavm.classlib.java.util.concurrent.*;
-import org.teavm.classlib.java.util.concurrent.helpers.*;
+import org.teavm.classlib.java.util.concurrent.TTimeUnit;
+import org.teavm.classlib.java.util.concurrent.helpers.FIFOWaitQueue;
+import org.teavm.classlib.java.util.concurrent.helpers.Utils;
+import org.teavm.classlib.java.util.concurrent.helpers.WaitQueue;
 
 /**
  * A reentrant mutual exclusion {@link TLock} with the same basic
@@ -93,7 +95,7 @@ public class TReentrantLock implements TLock, java.io.Serializable,
     static abstract class Sync implements java.io.Serializable {
         private static final long serialVersionUID = -5179523762034025860L;
 
-        protected transient Thread owner_ = null;
+        private transient Thread owner_ = null;
         protected transient int holds_ = 0;
 
         protected Sync() {}
@@ -116,12 +118,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         public boolean tryLock() {
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return true;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return true;
                 }
@@ -138,17 +140,17 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         }
 
         public synchronized boolean isHeldByCurrentThread() {
-            return holds_ > 0 && Thread.currentThread() == owner_;
+            return holds_ > 0 && Thread.currentThread() == getOwner_();
         }
 
         public synchronized boolean isLocked() {
-            return owner_ != null;
+            return getOwner_() != null;
         }
 
         public abstract boolean isFair();
 
         protected synchronized Thread getOwner() {
-            return owner_;
+            return getOwner_();
         }
 
         public boolean hasQueuedThreads() {
@@ -166,6 +168,15 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         public boolean isQueued(Thread thread) {
             throw new UnsupportedOperationException("Use FAIR version");
         }
+
+		protected Thread getOwner_() {
+			return owner_;
+		}
+
+		protected void setOwner_(Thread owner_) {
+			System.out.println("changing owner from " + this.getOwner() +  " to " + owner_);
+			this.owner_ = owner_;
+		}
     }
 
     /**
@@ -183,12 +194,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         public void lock() {
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return;
                 }
@@ -205,8 +216,8 @@ public class TReentrantLock implements TLock, java.io.Serializable,
                                 // will act as signalled, ignoring the
                                 // interruption
                             }
-                            if (owner_ == null) {
-                                owner_ = caller;
+                            if (getOwner_() == null) {
+                                setOwner_(caller);
                                 holds_ = 1;
                                 return;
                             }
@@ -223,24 +234,24 @@ public class TReentrantLock implements TLock, java.io.Serializable,
             if (Thread.interrupted()) throw new InterruptedException();
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return;
                 }
                 else {
                     try {
-                        do { wait(); } while (owner_ != null);
-                        owner_ = caller;
+                        do { wait(); } while (getOwner_() != null);
+                        setOwner_(caller);
                         holds_ = 1;
                         return;
                     }
                     catch (InterruptedException ex) {
-                        if (owner_ == null) notify();
+                        if (getOwner_() == null) notify();
                         throw ex;
                     }
                 }
@@ -252,12 +263,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
             Thread caller = Thread.currentThread();
 
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return true;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return true;
                 }
@@ -268,12 +279,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
                     try {
                         for (; ; ) {
                             TTimeUnit.NANOSECONDS.timedWait(this, nanos);
-                            if (caller == owner_) {
+                            if (caller == getOwner_()) {
                                 incHolds();
                                 return true;
                             }
-                            else if (owner_ == null) {
-                                owner_ = caller;
+                            else if (getOwner_() == null) {
+                                setOwner_(caller);
                                 holds_ = 1;
                                 return true;
                             }
@@ -285,7 +296,7 @@ public class TReentrantLock implements TLock, java.io.Serializable,
                         }
                     }
                     catch (InterruptedException ex) {
-                        if (owner_ == null) notify();
+                        if (getOwner_() == null) notify();
                         throw ex;
                     }
                 }
@@ -293,12 +304,17 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         }
 
         public synchronized void unlock() {
-            if (Thread.currentThread() != owner_)
-                throw new IllegalMonitorStateException("Not owner");
+            if (Thread.currentThread() != getOwner_()) {
+            	System.out.println(Thread.currentThread());
+            	System.out.println(getOwner());
+            	throw new IllegalMonitorStateException("Not owner");
+            }
 
             if (--holds_ == 0) {
-                owner_ = null;
-                notify();
+                setOwner_(null);
+                synchronized (this) {
+                	notify();
+				}
             }
         }
 
@@ -319,12 +335,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
 
         public synchronized boolean recheck(WaitQueue.WaitNode node) {
             Thread caller = Thread.currentThread();
-            if (owner_ == null) {
-                owner_ = caller;
+            if (getOwner_() == null) {
+                setOwner_(caller);
                 holds_ = 1;
                 return true;
             }
-            else if (caller == owner_) {
+            else if (caller == getOwner_()) {
                 incHolds();
                 return true;
             }
@@ -334,18 +350,18 @@ public class TReentrantLock implements TLock, java.io.Serializable,
 
         public synchronized void takeOver(WaitQueue.WaitNode node) {
             // assert (holds_ == 1 && owner_ == Thread.currentThread()
-            owner_ = node.getOwner();
+            setOwner_(node.getOwner());
         }
 
         public void lock() {
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return;
                 }
@@ -358,12 +374,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
             if (Thread.interrupted()) throw new InterruptedException();
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return;
                 }
@@ -376,12 +392,12 @@ public class TReentrantLock implements TLock, java.io.Serializable,
             if (Thread.interrupted()) throw new InterruptedException();
             Thread caller = Thread.currentThread();
             synchronized (this) {
-                if (owner_ == null) {
-                    owner_ = caller;
+                if (getOwner_() == null) {
+                    setOwner_(caller);
                     holds_ = 1;
                     return true;
                 }
-                else if (caller == owner_) {
+                else if (caller == getOwner_()) {
                     incHolds();
                     return true;
                 }
@@ -391,7 +407,7 @@ public class TReentrantLock implements TLock, java.io.Serializable,
         }
 
         protected synchronized WaitQueue.WaitNode getSignallee(Thread caller) {
-            if (caller != owner_)
+            if (caller != getOwner_())
                 throw new IllegalMonitorStateException("Not owner");
             // assert (holds_ > 0)
             if (holds_ >= 2) { // current thread will keep the lock
@@ -401,7 +417,7 @@ public class TReentrantLock implements TLock, java.io.Serializable,
             // assert (holds_ == 1)
             WaitQueue.WaitNode w = wq_.extract();
             if (w == null) { // if none, clear for new arrivals
-                owner_ = null;
+                setOwner_(null);
                 holds_ = 0;
             }
             return w;

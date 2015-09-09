@@ -27,13 +27,13 @@ import java.util.Enumeration;
  * @see TResourceBundle
  * @since 1.1
  */
-public abstract class ListResourceBundle extends TResourceBundle {
+public abstract class TListResourceBundle extends TResourceBundle {
     THashMap<String, Object> table;
 
     /**
      * Constructs a new instance of this class.
      */
-    public ListResourceBundle() {
+    public TListResourceBundle() {
         super();
     }
 
