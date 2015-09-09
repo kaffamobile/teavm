@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 import org.teavm.cache.NoCache;
 import org.teavm.common.Graph;
 import org.teavm.common.GraphIndexer;
@@ -317,6 +318,7 @@ public class Decompiler {
     private AsyncMethodNode decompileAsyncCacheMiss(MethodHolder method) {
         AsyncMethodNode node = new AsyncMethodNode(method.getReference());
         AsyncProgramSplitter splitter = new AsyncProgramSplitter(classSource, splitMethods);
+        System.out.println(method.getOwnerName() + " |  " + method.getName() +" |  " +method.getReference());
         splitter.split(method.getProgram());
         for (int i = 0; i < splitter.size(); ++i) {
             AsyncMethodPart part;
@@ -326,6 +328,7 @@ public class Decompiler {
                 StringBuilder sb = new StringBuilder("Error decompiling method " + method.getReference() +
                         " part " + i + ":\n");
                 sb.append(new ListingBuilder().buildListing(splitter.getProgram(i), "  "));
+                System.out.println("error: " + sb.toString());
                 throw new DecompilationException(sb.toString(), e);
             }
             node.getBody().add(part);
@@ -515,7 +518,7 @@ public class Decompiler {
             tryCatchStmt.setExceptionType(bookmark.exceptionType);
             tryCatchStmt.setExceptionVariable(bookmark.exceptionVariable);
             tryCatchStmt.getHandler().add(generator.generateJumpStatement(
-                    program.basicBlockAt(bookmark.exceptionHandler)));
+            		program.basicBlockAt(bookmark.exceptionHandler)));
             List<Statement> blockPart = block.body.subList(bookmark.offset, block.body.size());
             tryCatchStmt.getProtectedBody().addAll(blockPart);
             blockPart.clear();

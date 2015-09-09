@@ -18,7 +18,26 @@ package org.teavm.javascript;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.teavm.javascript.ast.*;
+
+import org.teavm.javascript.ast.AssignmentStatement;
+import org.teavm.javascript.ast.BlockStatement;
+import org.teavm.javascript.ast.BreakStatement;
+import org.teavm.javascript.ast.ConditionalStatement;
+import org.teavm.javascript.ast.ContinueStatement;
+import org.teavm.javascript.ast.GotoPartStatement;
+import org.teavm.javascript.ast.IdentifiedStatement;
+import org.teavm.javascript.ast.InitClassStatement;
+import org.teavm.javascript.ast.MonitorEnterStatement;
+import org.teavm.javascript.ast.MonitorExitStatement;
+import org.teavm.javascript.ast.ReturnStatement;
+import org.teavm.javascript.ast.SequentialStatement;
+import org.teavm.javascript.ast.Statement;
+import org.teavm.javascript.ast.StatementVisitor;
+import org.teavm.javascript.ast.SwitchClause;
+import org.teavm.javascript.ast.SwitchStatement;
+import org.teavm.javascript.ast.ThrowStatement;
+import org.teavm.javascript.ast.TryCatchStatement;
+import org.teavm.javascript.ast.WhileStatement;
 
 /**
  *
@@ -40,10 +59,16 @@ class AllBlocksCountVisitor implements StatementVisitor {
         boolean oldLast = last;
         for (int i = 0; i < statements.size() - 1; ++i) {
             last = false;
-            statements.get(i).acceptVisitor(this);
+            Statement statement = statements.get(i);
+            if (statement != null) {
+            	statement.acceptVisitor(this);
+            }
         }
         last = true;
-        statements.get(statements.size() - 1).acceptVisitor(this);
+        Statement statement = statements.get(statements.size() - 1);
+        if (statement != null) {
+        	statement.acceptVisitor(this);
+        }
         last = oldLast;
     }
 
