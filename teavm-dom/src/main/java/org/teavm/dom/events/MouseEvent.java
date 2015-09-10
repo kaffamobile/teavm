@@ -59,6 +59,12 @@ public interface MouseEvent extends Event {
 
     @JSProperty
     short getButton();
+    
+    @JSProperty
+    int getDetail();
+    
+    @JSProperty
+    int getWheelDelta();
 
     @JSProperty
     EventTarget getRelatedTarget();
